@@ -1,0 +1,17 @@
+{
+  "name": "node-azure-media",
+  "version": "1.0.0",
+  "homepage": "https://github.com/fritzy/node-azure-media",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:fritzy/node-azure-media.git"
+  },
+  "description": "Node SDK for Azure's Media Service",
+  "dependencies": {
+      "verymodel": "*",
+  },
+  "scripts": {
+    "test": "nodeunit tests/tests.js"
+  },
+  "main": "index.js"
+}
