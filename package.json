@@ -8,7 +8,7 @@
   },
   "description": "Node SDK for Azure's Media Service",
   "dependencies": {
-      "verymodel": "*",
+      "verymodel": "*"
   },
   "scripts": {
     "test": "nodeunit tests/tests.js"

@@ -16,5 +16,5 @@ module.exports = new Very.VeryModel({
     LastModified: {type: 'date', static: true},
     Created: {type: 'date', static: true},
     MimeType: {type: Very.VeryType().len(4000)},
-    ContentChecksum: {type: Very.VeryType().isHexidecimal()},
+    ContentChecksum: {type: Very.VeryType().isHexadecimal()},
 });

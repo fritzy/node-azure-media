@@ -9,7 +9,7 @@ module.exports = new Very.VeryModel({
     Created: {type: 'date', static: true},
     LastModified: {type: 'date', static: true},
     Name: {},
-    State: {static: true, Very.VeryType().isInt().isIn([0, 1, 2])},
+    State: {static: true, type: Very.VeryType().isInt().isIn([0, 1, 2])},
     ParentIngestManifestId: {required: true},
     ParentIngestManifestAssetId: {required: true},
     ErrorDetail: {static: true},
