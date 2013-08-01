@@ -60,6 +60,27 @@ function AzureAPI(config) {
         }.bind(this));
     };
 
+    this.getRequest = function (model, id, cb) {
+        var header = {
+            Accept: 'application/json;odata=verbose',
+            DataServiceVersion: '3.0',
+            MaxDataServiceVersion: '3.0',
+            'x-ms-version': '2.2',
+            'Content-Type': 'application/json;odata=verbose',
+            Authorization: 'Bearer ' + this.oauth.access_token
+        };
+        request.get({followRedirect: false, headers: header, uri: this.config.base_url +  model[0].toUpperCase() + model.slice(1) + "s('" + id + "')"}, function (err, res) {
+            if (res.statusCode == 200) {
+                var data = JSON.parse(res.body).d;
+                var dobj = models[model].create(data);
+                cb(err, dobj);
+            } else {
+                if (!err) err = 'Did not get 200 back from get.';
+                cb(err);
+            }
+        });
+    };
+
     this.listRequest = function (model, cb) {
         var header = {
             Accept: 'application/json;odata=verbose',
