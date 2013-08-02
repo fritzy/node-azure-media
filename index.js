@@ -86,7 +86,7 @@ function AzureAPI(config) {
             'Content-Type': 'application/json;odata=verbose',
             Authorization: 'Bearer ' + this.oauth.access_token
         };
-        request.get({followRedirect: false, headers: header, uri: this.config.base_url +  model[0].toUpperCase() + model.slice(1) + "s('" + id + "')"}, function (err, res) {
+        request.get({followRedirect: false, headers: header, uri: this.config.base_url +  resourceMap[model] + "('" + id + "')"}, function (err, res) {
             if (res.statusCode == 200) {
                 var data = JSON.parse(res.body).d;
                 var dobj = models[model].create(data);
@@ -106,7 +106,7 @@ function AzureAPI(config) {
             'x-ms-version': '2.2',
             Authorization: 'Bearer ' + this.oauth.access_token
         };
-        request.get({followRedirect: false, headers: header, uri: this.config.base_url + model[0].toUpperCase() + model.slice(1) + 's'}, function (err, res) {
+        request.get({followRedirect: false, headers: header, uri: this.config.base_url + resourceMap[model]}, function (err, res) {
             var objs = [];
             if (res.statusCode == 200) {
                 var data = JSON.parse(res.body).d.results;
@@ -132,7 +132,7 @@ function AzureAPI(config) {
             Authorization: 'Bearer ' + this.oauth.access_token
         };
         var pl = models[model].create(data).toObject();
-        request.post({followRedirect: false, headers: header, uri: this.config.base_url +  model[0].toUpperCase() + model.slice(1) + 's', body: JSON.stringify({Name: 'test'})}, function (err, res) {
+        request.post({followRedirect: false, headers: header, uri: this.config.base_url +  resourceMap[model], body: JSON.stringify({Name: 'test'})}, function (err, res) {
             if (res.statusCode == 201) {
                 var data = JSON.parse(res.body).d;
                 var dobj = models[model].create(data);
@@ -153,7 +153,7 @@ function AzureAPI(config) {
             'Content-Type': 'application/json;odata=verbose',
             Authorization: 'Bearer ' + this.oauth.access_token
         };
-        var url = this.config.base_url +  model[0].toUpperCase() + model.slice(1) + 's' + "('" + id + "')";
+        var url = this.config.base_url +  resourceMap[model] + "('" + id + "')";
         request({method: 'DELETE', followRedirect: false, headers: header, uri: url}, function (err, res) {
             if (res.statusCode == 204) {
                 cb(err);
