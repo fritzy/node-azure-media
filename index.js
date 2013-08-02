@@ -19,6 +19,15 @@ var resourceMap = {
     tasktemplate: 'TaskTemplates',
 };
 
+function modelURI(modelName, id) {
+    var url = this.config.base_url + resourceMap[modelName];
+    if (id) {
+        url = url + "('" + id + "')";
+    }
+    return url;
+}
+
+
 function AzureAPI(config) {
     this.config = config || {};
     if (!this.config.hasOwnProperty('base_url')) {
@@ -31,7 +40,7 @@ function AzureAPI(config) {
     this.rest = {};
 }
 
-(function() {
+(function () {
 
     this.init = function (cb) {
         Object.keys(endpoints).forEach(function (endpoint) {
@@ -45,14 +54,12 @@ function AzureAPI(config) {
 
         this.getAuthToken(function (err, result) {
             //get the first redirect
-            var header = {
-                Accept: 'application/json;odata=verbose',
-                DataServiceVersion: '3.0',
-                MaxDataServiceVersion: '3.0',
-                'x-ms-version': '2.2',
-                Authorization: 'Bearer ' + this.oauth.access_token
-            };
-            request.get({followRedirect: false, headers: header, uri: this.config.base_url + 'Assets'}, function (err, res) {
+            request.get({
+                uri: modelURI('assets'), 
+                headers: this.defaultHeaders(), 
+                followRedirect: false, 
+                strictSSL: true
+            }, function (err, res) {
                 if (res.statusCode === 301) {
                     this.config.base_url = res.headers.location;
                     console.log("changing base url to",  this.config.base_url);
@@ -62,13 +69,29 @@ function AzureAPI(config) {
         }.bind(this));
     };
 
+    this.defaultHeaders = function (opts) {
+        var headers = {
+            Accept: 'application/json;odata=verbose',
+            DataServiceVersion: '3.0',
+            MaxDataServiceVersion: '3.0',
+            'x-ms-version': '2.2',
+            'Content-Type': 'application/json;odata=verbose',
+            Authorization: 'Bearer ' + this.oauth.access_token
+        };
+        return headers;
+    };
+
     this.getAuthToken = function (cb) {
-        request.post({uri: this.config.oauth_url, form: {
-            grant_type: 'client_credentials', 
-            client_id: this.config.client_id,
-            client_secret: this.config.client_secret,
-            scope: 'urn:WindowsAzureMediaServices'
-        }}, function (err, res) {
+        request.post({
+            uri: this.config.oauth_url, 
+            form: {
+                grant_type: 'client_credentials', 
+                client_id: this.config.client_id,
+                client_secret: this.config.client_secret,
+                scope: 'urn:WindowsAzureMediaServices'
+            },
+            strictSSL: true
+        }, function (err, res) {
             if (err) throw Error("Authentication Error");
             var result = JSON.parse(res.body);
             this.oauth = result;
@@ -78,15 +101,12 @@ function AzureAPI(config) {
     };
 
     this.getRequest = function (model, id, cb) {
-        var header = {
-            Accept: 'application/json;odata=verbose',
-            DataServiceVersion: '3.0',
-            MaxDataServiceVersion: '3.0',
-            'x-ms-version': '2.2',
-            'Content-Type': 'application/json;odata=verbose',
-            Authorization: 'Bearer ' + this.oauth.access_token
-        };
-        request.get({followRedirect: false, headers: header, uri: this.config.base_url +  resourceMap[model] + "('" + id + "')"}, function (err, res) {
+        request.get({
+            uri: modelURI(model, id),
+            headers: this.defaultHeaders(), 
+            followRedirect: false, 
+            strictSSL: true
+        }, function (err, res) {
             if (res.statusCode == 200) {
                 var data = JSON.parse(res.body).d;
                 var dobj = models[model].create(data);
@@ -99,14 +119,12 @@ function AzureAPI(config) {
     };
 
     this.listRequest = function (model, cb) {
-        var header = {
-            Accept: 'application/json;odata=verbose',
-            DataServiceVersion: '3.0',
-            MaxDataServiceVersion: '3.0',
-            'x-ms-version': '2.2',
-            Authorization: 'Bearer ' + this.oauth.access_token
-        };
-        request.get({followRedirect: false, headers: header, uri: this.config.base_url + resourceMap[model]}, function (err, res) {
+        request.get({
+            uri: modelURI(model),
+            headers: this.defaultHeaders(), 
+            followRedirect: false, 
+            strictSSL: true
+        }, function (err, res) {
             var objs = [];
             if (res.statusCode == 200) {
                 var data = JSON.parse(res.body).d.results;
@@ -123,16 +141,14 @@ function AzureAPI(config) {
     };
 
     this.createRequest = function (model, data, cb) {
-        var header = {
-            Accept: 'application/json;odata=verbose',
-            DataServiceVersion: '3.0',
-            MaxDataServiceVersion: '3.0',
-            'x-ms-version': '2.2',
-            'Content-Type': 'application/json;odata=verbose',
-            Authorization: 'Bearer ' + this.oauth.access_token
-        };
         var pl = models[model].create(data).toObject();
-        request.post({followRedirect: false, headers: header, uri: this.config.base_url +  resourceMap[model], body: JSON.stringify({Name: 'test'})}, function (err, res) {
+        request.post({
+            uri: modelURI(model),
+            headers: this.defaultHeaders(),
+            body: JSON.stringify(pl),
+            followRedirect: false,
+            strictSSL: true
+        }, function (err, res) {
             if (res.statusCode == 201) {
                 var data = JSON.parse(res.body).d;
                 var dobj = models[model].create(data);
@@ -145,16 +161,13 @@ function AzureAPI(config) {
     };
 
     this.deleteRequest = function (model, id, cb) {
-        var header = {
-            Accept: 'application/json;odata=verbose',
-            DataServiceVersion: '3.0',
-            MaxDataServiceVersion: '3.0',
-            'x-ms-version': '2.2',
-            'Content-Type': 'application/json;odata=verbose',
-            Authorization: 'Bearer ' + this.oauth.access_token
-        };
-        var url = this.config.base_url +  resourceMap[model] + "('" + id + "')";
-        request({method: 'DELETE', followRedirect: false, headers: header, uri: url}, function (err, res) {
+        request({
+            method: 'DELETE', 
+            uri: modelURI(model, id),
+            headers: this.defaultHeaders(),
+            followRedirect: false, 
+            strictSSL: true
+        }, function (err, res) {
             if (res.statusCode == 204) {
                 cb(err);
             } else {
