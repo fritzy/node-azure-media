@@ -19,14 +19,6 @@ var resourceMap = {
     tasktemplate: 'TaskTemplates',
 };
 
-function modelURI(modelName, id) {
-    var url = this.config.base_url + resourceMap[modelName];
-    if (id) {
-        url = url + "('" + id + "')";
-    }
-    return url;
-}
-
 
 function AzureAPI(config) {
     this.config = config || {};
@@ -55,7 +47,7 @@ function AzureAPI(config) {
         this.getAuthToken(function (err, result) {
             //get the first redirect
             request.get({
-                uri: modelURI('assets'), 
+                uri: this.modelURI('asset'), 
                 headers: this.defaultHeaders(), 
                 followRedirect: false, 
                 strictSSL: true
@@ -81,7 +73,17 @@ function AzureAPI(config) {
         return headers;
     };
 
+    this.modelURI = function (modelName, id) {
+        var url = this.config.base_url + resourceMap[modelName];
+        if (id) {
+            url = url + "('" + id + "')";
+        }
+        return url;
+    };
+
     this.getAuthToken = function (cb) {
+        cb = cb || function () {};
+
         request.post({
             uri: this.config.oauth_url, 
             form: {
@@ -101,8 +103,10 @@ function AzureAPI(config) {
     };
 
     this.getRequest = function (model, id, cb) {
+        cb = cb || function () {};
+
         request.get({
-            uri: modelURI(model, id),
+            uri: this.modelURI(model, id),
             headers: this.defaultHeaders(), 
             followRedirect: false, 
             strictSSL: true
@@ -112,15 +116,16 @@ function AzureAPI(config) {
                 var dobj = models[model].create(data);
                 cb(err, dobj);
             } else {
-                if (!err) err = 'Did not get 200 back from get.';
-                cb(err);
+                cb(err || 'Expected 200 status, received: ' + res.statusCode);
             }
         });
     };
 
     this.listRequest = function (model, cb) {
+        cb = cb || function () {};
+
         request.get({
-            uri: modelURI(model),
+            uri: this.modelURI(model),
             headers: this.defaultHeaders(), 
             followRedirect: false, 
             strictSSL: true
@@ -134,18 +139,24 @@ function AzureAPI(config) {
                 });
                 cb(err, objs);
             } else {
-                if (!err) err = 'Did not get 200 back from list.';
-                cb(err);
+                cb(err || 'Expected 200 status, received: ' + res.statusCode);
             }
         });
     };
 
     this.createRequest = function (model, data, cb) {
-        var pl = models[model].create(data).toObject();
+        cb = cb || function () {};
+
+        var pl = models[model].create(data);
+        var validationErrors = pl.doValidate();
+        if (validationErrors.length) {
+            return cb(validationErrors);
+        }
+
         request.post({
-            uri: modelURI(model),
+            uri: this.modelURI(model),
             headers: this.defaultHeaders(),
-            body: JSON.stringify(pl),
+            body: JSON.stringify(pl.toObject()),
             followRedirect: false,
             strictSSL: true
         }, function (err, res) {
@@ -154,16 +165,17 @@ function AzureAPI(config) {
                 var dobj = models[model].create(data);
                 cb(err, dobj);
             } else {
-                if (!err) err = 'Did not get 201 back from create.';
-                cb(err);
+                cb(err || 'Expected 201 status, received: ' + res.statusCode);
             }
         });
     };
 
     this.deleteRequest = function (model, id, cb) {
+        cb = cb || function () {};
+
         request({
             method: 'DELETE', 
-            uri: modelURI(model, id),
+            uri: this.modelURI(model, id),
             headers: this.defaultHeaders(),
             followRedirect: false, 
             strictSSL: true
@@ -171,11 +183,12 @@ function AzureAPI(config) {
             if (res.statusCode == 204) {
                 cb(err);
             } else {
-                cb('Did not recieve 204 in DELETE');
+                cb(err || 'Expected 204 status, received: ' + res.statusCode);
             }
         });
     };
 
 }).call(AzureAPI.prototype);
+
 
 module.exports = AzureAPI;
