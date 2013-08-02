@@ -94,8 +94,16 @@ function AzureAPI(config) {
             },
             strictSSL: true
         }, function (err, res) {
-            if (err) throw Error("Authentication Error");
+            if (err) {
+                return cb(err);
+            }
+
             var result = JSON.parse(res.body);
+
+            if (result.error) {
+                return cb(result);
+            }
+            
             this.oauth = result;
             this.oauth.time_started = Date.now();
             cb(err, result.access_token);
