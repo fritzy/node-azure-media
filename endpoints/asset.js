@@ -1,4 +1,5 @@
-var modelName = 'asset';
+var path = require('path');
+var modelName = path.basename(module.filename, '.js');
 
 var calls = {
 

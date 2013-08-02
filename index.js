@@ -2,6 +2,23 @@ var models = require('./models');
 var endpoints = require('./endpoints');
 var request = require('request');
 
+var resourceMap = {
+    accesspolicy: 'AccessPolicies',
+    assetfile: 'Files',
+    asset: 'Assets',
+    contentkey: 'ContentKeys',
+    ingestmanifest: 'IngestManifests',
+    ingestmanifestasset: 'IngestManifestAssets',
+    ingestmanifestfile: 'IngestManifestFiles',
+    job: 'Jobs',
+    jobtemplate: 'JobTemplates',
+    locator: 'Locators',
+    mediaprocessor: 'MediaProcessors',
+    notificationendpoint: 'NotificationEndpoints',
+    task: 'Tasks',
+    tasktemplate: 'TaskTemplates',
+};
+
 function AzureAPI(config) {
     this.config = config || {};
     if (!this.config.hasOwnProperty('base_url')) {
