@@ -196,6 +196,34 @@ function AzureAPI(config) {
         });
     };
 
+    this.updateRequest = function (model, id, data, cb) {
+        cb = cb || function () {};
+
+        var pl = models[model].create(data);
+        var validationErrors = pl.doValidate();
+        if (validationErrors.length) {
+            return cb(validationErrors);
+        }
+
+        request({
+            method: 'MERGE',
+            uri: this.modelURI(model, id),
+            headers: this.defaultHeaders(),
+            followRedirect: false,
+            strictSSL: true,
+            body: JSON.stringify
+        }, function (err, res) {
+            if (res.statusCode == 200) {
+                var data = JSON.parse(res.body).d;
+                var dobj = models[model].create(data);
+                cb(err, dobj);
+            } else {
+                cb(err || 'Expected 200 status, received: ' + res.statusCode);
+            }
+
+        });
+    };
+
 }).call(AzureAPI.prototype);
 
 
