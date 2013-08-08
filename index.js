@@ -1,6 +1,7 @@
 var models = require('./models');
 var endpoints = require('./endpoints');
 var request = require('request');
+var AzureBlob = require('./blob');
 
 var resourceMap = {
     accesspolicy: 'AccessPolicies',
@@ -30,6 +31,8 @@ function AzureAPI(config) {
     }
     this.auth_token = config.auth_token || '';
     this.rest = {};
+
+    this.blob = new AzureBlob(this);
 }
 
 (function () {
@@ -73,10 +76,19 @@ function AzureAPI(config) {
         return headers;
     };
 
-    this.modelURI = function (modelName, id) {
+    this.modelURI = function (modelName, id, filters) {
+        var filter;
+        var fidx;
         var url = this.config.base_url + resourceMap[modelName];
+        var filterurl = [];
         if (id) {
             url = url + "('" + id + "')";
+        }
+        if (typeof filters !== 'undefined') {
+            for (fidx in filters) {
+                filter = filters[fidx];
+                filterurl.push("$filter=" + filter.op + "('" + filter.source + ", " + filter.compare + "')");
+            }
         }
         return url;
     };
@@ -129,7 +141,7 @@ function AzureAPI(config) {
         });
     };
 
-    this.listRequest = function (model, cb) {
+    this.listRequest = function (model, filter, cb) {
         cb = cb || function () {};
 
         request.get({
@@ -173,7 +185,8 @@ function AzureAPI(config) {
                 var dobj = models[model].create(data);
                 cb(err, dobj);
             } else {
-                cb(err || 'Expected 201 status, received: ' + res.statusCode);
+                console.log(pl.toObject());
+                cb(err || 'Create ' + model + ': Expected 201 status, received: ' + res.statusCode + '\n' + res.body);
             }
         });
     };

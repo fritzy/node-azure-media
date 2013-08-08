@@ -6,8 +6,8 @@ var AccessPolicy = require('./accesspolicy');
 
 module.exports = new Very.VeryModel({
     Id: {},
-    Name: {type: Very.VeryType().len(4000)},
-    ExpirationDateTime: {type: 'date'},
+    Name: {type: Very.VeryType().len(0, 4000)},
+    ExpirationDateTime: {},
     Type: {type: Very.VeryType().isInt().isIn([0, 1, 2]), required: true},
     Path: {static: true},
     BaseUri: {static: true},
