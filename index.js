@@ -133,6 +133,7 @@ function AzureAPI(config) {
         }, function (err, res) {
             if (res.statusCode == 200) {
                 var data = JSON.parse(res.body).d;
+                console.log(data);
                 var dobj = models[model].create(data);
                 cb(err, dobj);
             } else {
@@ -141,7 +142,7 @@ function AzureAPI(config) {
         });
     };
 
-    this.listRequest = function (model, filter, cb) {
+    this.listRequest = function (model, cb) {
         cb = cb || function () {};
 
         request.get({
@@ -150,6 +151,7 @@ function AzureAPI(config) {
             followRedirect: false, 
             strictSSL: true
         }, function (err, res) {
+            console.log(err, res.statusCode);
             var objs = [];
             if (res.statusCode == 200) {
                 var data = JSON.parse(res.body).d.results;
