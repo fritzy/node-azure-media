@@ -134,21 +134,21 @@ function AzureBlob(api) {
     this.getAssetById = function () {
     };
 
-    this.encodeVideo = function (assetId, encoder, cb) {
+    this.encodeVideo = function (assetId, encoder, callback) {
         async.waterfall([
             function (cb) {
-                this.api.mediaprocessor.getCurrentByName('Windows Azure Media Encoder', cb);
-            },
-            function (processor) {
+                this.api.rest.mediaprocessor.getCurrentByName('Windows Azure Media Encoder', cb);
+            }.bind(this),
+            function (processor, cb) {
                 this.api.rest.asset.get(assetId, function (err, asset) {
                     cb(err, processor, asset);
                 });
-            },
-            function (processor, asset) {
+            }.bind(this),
+            function (processor, asset, cb) {
                 this.api.rest.job.create({
-                    Name: 'EncodeVideo-' + uuid();
+                    Name: 'EncodeVideo-' + uuid(),
                     InputMediaAssets: [{'__metadata': {uri: asset.__metadata.uri}}],
-                    Task: [{
+                    Tasks: [{
                         Configuration: encoder,
                         MediaProcessorId: processor.Id,
                         TaskBody: "<?xml version=\"1.0\" encoding=\"utf-8\"?><taskBody><inputAsset>JobInputAsset(0)</inputAsset><outputAsset>JobOutputAsset(0)</outputAsset></taskBody>"
@@ -156,9 +156,9 @@ function AzureBlob(api) {
                 }, function (err, job) {
                     cb(err, processor, asset, job);
                 });
-            },
+            }.bind(this),
         ], function (err, processor, asset, job) {
-            cb(err, job, asset);
+            callback(err, job, asset);
         });
     };
 
