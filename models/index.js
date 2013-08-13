@@ -18,4 +18,6 @@ module.exports = {
     locator: require('./locator'),
     storageaccount: require('./storageaccount'),
     taskhistoricalevent: require('./taskhistoricalevent'),
+    odata: require('./odata'),
+    odata_metadata: require('./odata_metadata'),
 };

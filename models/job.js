@@ -3,6 +3,7 @@ var common = require('./common');
 var Asset = require('./asset');
 var Task = require('./task');
 var JobNotificationSubscription = require('./jobnotificationsubscription');
+var odata = require('./odata');
 // http://msdn.microsoft.com/en-us/library/windowsazure/jj853024.aspx
 
 module.exports = new Very.VeryModel({
@@ -16,7 +17,7 @@ module.exports = new Very.VeryModel({
     StartTime: {},
     State: {},
     TemplateId: {},
-    InputMediaAssets: {collection: Asset, required: true},
+    InputMediaAssets: {collection: odata, required: true},
     OutputMediaAssets: {static: true, collection: Asset},
     Tasks: {collection: Task},
     JobNotificationSubscriptions: {collection: JobNotificationSubscription},

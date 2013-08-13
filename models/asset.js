@@ -5,6 +5,7 @@ var ContentKey = require('./contentkey');
 var AssetFile = require('./assetfile');
 var StorageAccount = require('./storageaccount');
 var uuid = require('node-uuid');
+var metadata = require('./odata_metadata');
 // http://msdn.microsoft.com/en-us/library/windowsazure/hh974277.aspx
 
 module.exports = new Very.VeryModel({
@@ -14,6 +15,7 @@ module.exports = new Very.VeryModel({
     LastModified: {type: 'date', static: true},
     AlternateId: {type: Very.VeryType().len(0, 4000)},
     Name: {type: Very.VeryType().len(0, 4000)},
+    __metadata: {model: metadata},
     Options: {static: true, type: Very.VeryType().isInt().isIn([0, 1, 2, 4])},
     Uri: {static: true},
     Locators: {collection: Locator},

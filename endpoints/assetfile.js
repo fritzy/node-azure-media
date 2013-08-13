@@ -11,8 +11,8 @@ var calls = {
         this.getRequest(modelName, id, cb);
     },
 
-    list: function (cb) {
-        this.listRequest(modelName, cb);
+    list: function (cb, query) {
+        this.listRequest(modelName, cb, query);
     },
 
     update: function (id, data, cb) {

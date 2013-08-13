@@ -142,14 +142,15 @@ function AzureAPI(config) {
         });
     };
 
-    this.listRequest = function (model, cb) {
+    this.listRequest = function (model, cb, query) {
         cb = cb || function () {};
 
         request.get({
             uri: this.modelURI(model),
             headers: this.defaultHeaders(), 
             followRedirect: false, 
-            strictSSL: true
+            strictSSL: true,
+            qs: query
         }, function (err, res) {
             console.log(err, res.statusCode);
             var objs = [];

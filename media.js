@@ -2,6 +2,7 @@ var async = require('async');
 var moment = require('moment');
 var url = require('url');
 var request = require('request');
+var uuid = require('node-uuid');
 
 var Readable = require('stream').Readable;
 var Writable = require('stream').Writable;
@@ -89,7 +90,7 @@ function AzureBlob(api) {
         }.bind(this));
     };
 
-    this.downloadStream = function (assetId, filename, stream, done_cb) {
+    this.downloadStream = function (assetId, mimetype, stream, done_cb) {
         async.waterfall([
             function (cb) {
                 this.api.rest.accesspolicy.create({Name: 'Download', DurationInMinutes: 60, Permissions: 1}, function (err, result) {
@@ -101,11 +102,21 @@ function AzureBlob(api) {
                     cb(err, locator);
                 }.bind(this));
             }.bind(this),
-        ], function (err, locator) {
+            function (locator, cb) {
+                this.api.rest.assetfile.list(function (err, results) {
+                    if (results.length > 0) {
+                        cb (false, locator, results[0]);
+                    } else {
+                        cb ("No files associated with asset.");
+                    }
+                }.bind(this), {$filter: "ParentAssetId eq '" + assetId + "' and MimeType eq '" + mimetype + "'", $orderby: 'Created desc', $top: 1});
+            }.bind(this),
+        ], function (err, locator, fileasset) {
             var path = locator.Path;
             var parsedpath = url.parse(path);
-            parsedpath.pathname += '/' + filename;
+            parsedpath.pathname += '/' + fileasset.Name;
             path = url.format(parsedpath);
+            console.log(path);
             request({
                 uri: path,
                 method: 'GET',
@@ -121,6 +132,34 @@ function AzureBlob(api) {
     };
 
     this.getAssetById = function () {
+    };
+
+    this.encodeVideo = function (assetId, encoder, cb) {
+        async.waterfall([
+            function (cb) {
+                this.api.mediaprocessor.getCurrentByName('Windows Azure Media Encoder', cb);
+            },
+            function (processor) {
+                this.api.rest.asset.get(assetId, function (err, asset) {
+                    cb(err, processor, asset);
+                });
+            },
+            function (processor, asset) {
+                this.api.rest.job.create({
+                    Name: 'EncodeVideo-' + uuid();
+                    InputMediaAssets: [{'__metadata': {uri: asset.__metadata.uri}}],
+                    Task: [{
+                        Configuration: encoder,
+                        MediaProcessorId: processor.Id,
+                        TaskBody: "<?xml version=\"1.0\" encoding=\"utf-8\"?><taskBody><inputAsset>JobInputAsset(0)</inputAsset><outputAsset>JobOutputAsset(0)</outputAsset></taskBody>"
+                    }],
+                }, function (err, job) {
+                    cb(err, processor, asset, job);
+                });
+            },
+        ], function (err, processor, asset, job) {
+            cb(err, job, asset);
+        });
     };
 
 
