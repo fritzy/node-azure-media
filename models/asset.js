@@ -39,6 +39,10 @@ Model.extendModel({
     listFiles: function (cb, query) {
         this.api.rest.asset.listFiles(this.Id, cb, query);
     },
+
+    get: function (cb) {
+        this.api.rest.asset.get(this.Id, cb);
+    },
 });
 
 module.exports = Model;

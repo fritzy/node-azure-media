@@ -27,6 +27,9 @@ Each model usable at `API.rest.[lowercase model name]` with create, get, update,
 
 All REST endpoints are in the initialized api lib at api.rest.someendpoint (eg. `api.rest.asset`)
 
+"data" is a JavaScript object for the appropriate endpoint model documented in the Properties section of each model in [Azure Media Service REST API Reference](http://msdn.microsoft.com/en-us/library/windowsazure/hh973617.aspx).  
+Callbacks generally return an object, called a model. It uses [VeryModel](https://github.com/fritzy/VeryModel). VeryModel instances behave like normal objects. If you want a simpler object, call `.toObject()` and use the returned value.
+
 Each endpoint will have some of the following methods:
 
 ### update
@@ -36,6 +39,16 @@ Callback: `function (err, model)`
 ### create
 Signature: `create(data, callback)`  
 Callback: `function(err, model)`
+
+Example:
+
+    api.rest.asset.create({Name: 'Some Asset'}, function (err, asset) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log("Created asset: " + asset.Id);
+        }
+    });
 
 ### delete
 Signature: `delete(id, callback)`  
@@ -62,6 +75,10 @@ Callback: `function (err, accesspolicy_model)`
 ###assetfileindex
 ###ingestmanifestasset
 ###job
+
+Signature: `cancel(id, callback)`  
+Callback: `function (err)`
+
 ###locator
 ###notificationendpoint
 ###tasktemplate
@@ -76,6 +93,11 @@ Callback: `function (err, accesspolicy_model)`
 ###task
 
 ## Models
+
+Most callbacks return a [VeryModel](https://github.com/fritzy/VeryModel) instance.
+These are based on Microsoft's documentation and are implemented in /models/
+
+Some models have extra ORM-like methods, allowing you to interact with the model itself which will work with the Azure REST API behind the scenes.
 
 ###accesspolicy
 ###assetfileindex
@@ -99,3 +121,5 @@ uploadStream
 downloadStream
 
 getDownloadURL
+
+encode

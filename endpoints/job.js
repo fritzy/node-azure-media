@@ -58,7 +58,7 @@ var calls = {
             strictSSL: true,
         }, function (err, res) {
             cb(err, res.statusCode);
-        }
+        });
     },
 
 

@@ -6,7 +6,7 @@ var JobNotificationSubscription = require('./jobnotificationsubscription');
 var odata = require('./odata');
 // http://msdn.microsoft.com/en-us/library/windowsazure/jj853024.aspx
 
-module.exports = new Very.VeryModel({
+var Model = new Very.VeryModel({
     Id: {static: true},
     Name: {},
     Created: {type: 'date', static: true},
@@ -36,8 +36,10 @@ Model.extendModel({
         this.api.rest.job.delete(this.Id, cb);
     },
 
-    refresh: function (cb) {
+    get: function (cb) {
         this.api.rest.job.get(this.Id, cb);
     },
 
 });
+
+module.exports = Model;

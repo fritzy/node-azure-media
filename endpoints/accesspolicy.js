@@ -28,7 +28,7 @@ var calls = {
             } else {
                 this.rest.accesspolicy.create({Duration: duration, Permissions: permissions, Name: 'NodeAzureMedia:' + duration + ':' + permissions}, cb);
             }
-        }.bind(this), {$filter: "DurationInMinutes eq '" + duration "' and Permissions eq '" + permissions + "'",  $orderby: 'Created desc', $top: 1});
+        }.bind(this), {$filter: "DurationInMinutes eq '" + duration + "' and Permissions eq '" + permissions + "'",  $orderby: 'Created desc', $top: 1});
     },
 
 };
