@@ -166,7 +166,7 @@ function AzureAPI(config) {
                 });
                 cb(err, objs);
             } else {
-                cb(err || 'Expected 200 status, received: ' + res.statusCode);
+                cb(err || 'Expected 200 status, received: ' + res.statusCode + '\n' + res.body);
             }
         });
     };

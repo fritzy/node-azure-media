@@ -35,7 +35,7 @@ function AzureBlob(api) {
             }.bind(this),
             //create a policy
             function (asset, cb) {
-                this.api.rest.accesspolicy.create({Name: 'Upload', DurationInMinutes: 300, Permissions: 2}, function (err, result) {
+                this.api.rest.accesspolicy.findOrCreate(300, 2, function (err, result) {
                     cb(err, {asset: asset, policy: result});
                 }.bind(this));
             }.bind(this),
@@ -92,7 +92,7 @@ function AzureBlob(api) {
     this.downloadStream = function (assetId, mimetype, stream, done_cb) {
         async.waterfall([
             function (cb) {
-                this.api.rest.accesspolicy.create({Name: 'Download', DurationInMinutes: 60, Permissions: 1}, function (err, result) {
+                this.api.rest.accesspolicy.findOrCreate(60, 1, function (err, result) {
                     cb(err, result);
                 }.bind(this));
             }.bind(this),
@@ -115,7 +115,6 @@ function AzureBlob(api) {
             var parsedpath = url.parse(path);
             parsedpath.pathname += '/' + fileasset.Name;
             path = url.format(parsedpath);
-            console.log(path);
             request({
                 uri: path,
                 method: 'GET',
@@ -130,7 +129,7 @@ function AzureBlob(api) {
     this.getDownloadURL = function (assetId, mimetype, done_cb) {
         async.waterfall([
             function (cb) {
-                this.api.rest.accesspolicy.create({Name: 'Download', DurationInMinutes: 60, Permissions: 1}, function (err, result) {
+                this.api.rest.accesspolicy.findOrCreate(60, 1, function (err, result) {
                     cb(err, result);
                 }.bind(this));
             }.bind(this),

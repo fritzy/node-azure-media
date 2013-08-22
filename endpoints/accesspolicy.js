@@ -26,9 +26,9 @@ var calls = {
             if (!err && accesspolicies.length > 0) {
                 cb(err, accesspolicies[0]);
             } else {
-                this.rest.accesspolicy.create({Duration: duration, Permissions: permissions, Name: 'NodeAzureMedia:' + duration + ':' + permissions}, cb);
+                this.rest.accesspolicy.create({DurationInMinutes: duration, Permissions: permissions, Name: 'NodeAzureMedia_' + duration + '_' + permissions}, cb);
             }
-        }.bind(this), {$filter: "DurationInMinutes eq '" + duration + "' and Permissions eq '" + permissions + "'",  $orderby: 'Created desc', $top: 1});
+        }.bind(this), {$filter: "Name eq 'NodeAzureMedia_" + duration + "_" + permissions + "'",  $orderby: 'Created desc', $top: 1});
     },
 
 };
