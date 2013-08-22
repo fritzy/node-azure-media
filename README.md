@@ -116,10 +116,25 @@ Some models have extra ORM-like methods, allowing you to interact with the model
 
 ## Workflow Methods
 
-uploadStream
+###uploadStream
 
-downloadStream
+    api.uploadStream('somefile.mp4', fs.createReadStream('/some/file.mp4'), fs.statSync('/some/file.mp4').size, function (err, path, result) {
+    }, function (err, path) {
+        if(!err) {
+            console.log("done uploading");
+        }
+    });
 
-getDownloadURL
+### downloadStream
 
-encode
+    api.downloadStream(assetId, 'video/mp4', fs.createWriteStream('/some/download/path.mp4', function (err) {
+    });
+
+### getDownloadURL
+    api.getDownloadURL(assetId, 'video/mp4', fs.createWriteStream('/some/download/path.mp4', function (err, url) {
+    });
+
+### encodeVideo
+
+    api.encodeVideo(assetId, 'H264 Broadband SD 4x3', function (err, job)) {
+    });
