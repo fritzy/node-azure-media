@@ -35,7 +35,6 @@ var calls = {
             strictSSL: true,
             qs: query
         }, function (err, res) {
-            console.log(err, res.statusCode);
             var objs = [];
             if (res.statusCode == 200) {
                 var data = JSON.parse(res.body).d.results;
@@ -48,6 +47,18 @@ var calls = {
                 cb(err || 'Expected 200 status, received: ' + res.statusCode);
             }
         });
+    },
+
+    cancel: function cancelJob (id, cb) {
+        request.get({
+            uri: this.config.base_url + 'CanceJob',
+            qs: {'jobid': "'" + id + "'"},
+            headers: this.defaultHeaders(),
+            followRedirect: false,
+            strictSSL: true,
+        }, function (err, res) {
+            cb(err, res.statusCode);
+        }
     },
 
 

@@ -12,7 +12,7 @@ module.exports = new Very.VeryModel({
     Created: {type: 'date', static: true},
     LastModified: {type: 'date', static: true},
     EndTime: {type: 'date', static: true},
-    Priority: {type: Very.VeryType().isInt()},
+    Priority: {type: Very.VeryValidator().isInt()},
     RunningDuration: {},
     StartTime: {},
     State: {},
@@ -21,4 +21,23 @@ module.exports = new Very.VeryModel({
     OutputMediaAssets: {static: true, collection: Asset},
     Tasks: {collection: Task},
     JobNotificationSubscriptions: {collection: JobNotificationSubscription},
+});
+
+Model.extendModel({
+    listOutputMediaAssets: function (cb, query) {
+        this.api.rest.job.listOutputMediaAssets(this.Id, cb, query);
+    },
+
+    cancel: function (cb) {
+        this.api.rest.job.cancelJob(this.Id, cb);
+    },
+
+    delete: function (cb) {
+        this.api.rest.job.delete(this.Id, cb);
+    },
+
+    refresh: function (cb) {
+        this.api.rest.job.get(this.Id, cb);
+    },
+
 });

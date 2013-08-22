@@ -6,9 +6,9 @@ var AccessPolicy = require('./accesspolicy');
 
 module.exports = new Very.VeryModel({
     Id: {},
-    Name: {type: Very.VeryType().len(0, 4000)},
+    Name: {type: Very.VeryValidator().len(0, 4000)},
     ExpirationDateTime: {},
-    Type: {type: Very.VeryType().isInt().isIn([0, 1, 2]), required: true},
+    Type: {type: Very.VeryValidator().isInt().isIn([0, 1, 2]), required: true},
     Path: {static: true},
     BaseUri: {static: true},
     ContentAccessComponent: {static: true},

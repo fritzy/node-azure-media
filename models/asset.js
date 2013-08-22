@@ -8,15 +8,16 @@ var uuid = require('node-uuid');
 var metadata = require('./odata_metadata');
 // http://msdn.microsoft.com/en-us/library/windowsazure/hh974277.aspx
 
-module.exports = new Very.VeryModel({
+
+var Model = new Very.VeryModel({
     Id: {static: true},
-    State: {static: true, type: Very.VeryType().isInt().isIn([0, 1, 2])},
+    State: {static: true, type: Very.VeryValidator().isInt().isIn([0, 1, 2])},
     Created: {type: 'date', static: true},
     LastModified: {type: 'date', static: true},
-    AlternateId: {type: Very.VeryType().len(0, 4000)},
-    Name: {type: Very.VeryType().len(0, 4000)},
+    AlternateId: {type: Very.VeryValidator().len(0, 4000)},
+    Name: {type: Very.VeryValidator().len(0, 4000)},
     __metadata: {model: metadata},
-    Options: {static: true, type: Very.VeryType().isInt().isIn([0, 1, 2, 4])},
+    Options: {static: true, type: Very.VeryValidator().isInt().isIn([0, 1, 2, 4])},
     Uri: {static: true},
     Locators: {collection: Locator},
     ContentKeys: {collection: ContentKey},
@@ -25,3 +26,20 @@ module.exports = new Very.VeryModel({
     StorageAccountName: {},
     StorageAccount: {model: StorageAccount},
 });
+
+Model.extendModel({
+    delete: function (cb) {
+        this.api.rest.asset.delete(this.Id, cb);
+    },
+
+    update: function (cb) {
+        this.api.rest.asset.update(this.Id, this.toObject(), cb);
+    },
+
+    listFiles: function (cb, query) {
+        this.api.rest.asset.listFiles(this.Id, cb, query);
+    },
+});
+
+module.exports = Model;
+

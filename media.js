@@ -66,7 +66,6 @@ function AzureBlob(api) {
                 //'x-ms-date': moment.utc().format('YYYY-MM-DD'),
                 //Authorization: 'Bearer ' + this.api.oauth.access_token
             }, strictSSL: true}, function (err, res) {
-                console.log(0)
                 async.waterfall([
                     //delete upload location
                     function (cb) {
@@ -125,6 +124,36 @@ function AzureBlob(api) {
                     done_cb(err);
                 }
             }).pipe(stream);
+        }.bind(this));
+    };
+
+    this.getDownloadURL = function (assetId, mimetype, done_cb) {
+        async.waterfall([
+            function (cb) {
+                this.api.rest.accesspolicy.create({Name: 'Download', DurationInMinutes: 60, Permissions: 1}, function (err, result) {
+                    cb(err, result);
+                }.bind(this));
+            }.bind(this),
+            function (policy, cb) {
+                this.api.rest.locator.create({AccessPolicyId: policy.Id, AssetId: assetId, StartTime: moment.utc().subtract('minutes', 5).format('MM/DD/YYYY hh:mm:ss A'), Type: 1}, function (err, locator) {
+                    cb(err, locator);
+                }.bind(this));
+            }.bind(this),
+            function (locator, cb) {
+                this.api.rest.assetfile.list(function (err, results) {
+                    if (results.length > 0) {
+                        cb (false, locator, results[0]);
+                    } else {
+                        cb ("No files associated with asset.");
+                    }
+                }.bind(this), {$filter: "ParentAssetId eq '" + assetId + "' and MimeType eq '" + mimetype + "'", $orderby: 'Created desc', $top: 1});
+            }.bind(this),
+        ], function (err, locator, fileasset) {
+            var path = locator.Path;
+            var parsedpath = url.parse(path);
+            parsedpath.pathname += '/' + fileasset.Name;
+            path = url.format(parsedpath);
+            done_cb(err, path);
         }.bind(this));
     };
 

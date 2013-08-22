@@ -47,6 +47,12 @@ function AzureAPI(config) {
             }.bind(this));
         }.bind(this));
 
+        Object.keys(models).forEach(function (model) {
+            if (model !== 'common') {
+                models[model].addModelVar('api', this);
+            }
+        }.bind(this));
+
         this.getAuthToken(function (err, result) {
             //get the first redirect
             request.get({

@@ -9,5 +9,5 @@ module.exports = new Very.VeryModel({
     LastModified: {type: 'date', static: true},
     Name: {type: common.types.Name, required: true},
     DurationInMinutes: {type: 'number', required: true},
-    Permissions: {type: Very.VeryType().isInt().isIn([0, 1, 2, 4, 8])},
+    Permissions: {type: Very.VeryValidator().isInt().isIn([0, 1, 2, 4, 8])},
 });

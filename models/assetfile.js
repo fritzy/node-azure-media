@@ -5,7 +5,7 @@ var common = require('./common');
 module.exports = new Very.VeryModel({
     Id: {static: true},
     Name: {type: common.types.Name, required: true},
-    ContentFileSize: {type: Very.VeryType().isInt()},
+    ContentFileSize: {type: Very.VeryValidator().isInt()},
     ParentAssetId: {required: true},
     EncryptionVersion: {},
     EncryptionScheme: {},
@@ -15,6 +15,6 @@ module.exports = new Very.VeryModel({
     IsPrimary: {type: 'boolean'},
     LastModified: {type: 'date', static: true},
     Created: {type: 'date', static: true},
-    MimeType: {type: Very.VeryType().len(4000)},
-    ContentChecksum: {type: Very.VeryType().isHexadecimal()},
+    MimeType: {type: Very.VeryValidator().len(4000)},
+    ContentChecksum: {type: Very.VeryValidator().isHexadecimal()},
 });
