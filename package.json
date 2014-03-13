@@ -1,20 +1,19 @@
 {
-  "name": "azure-media",
+  "name": "caa-azure-media",
   "version": "1.0.0",
-  "homepage": "https://github.com/fritzy/node-azure-media",
+  "homepage": "https://github.com/caagency/caa-azure-media",
   "repository": {
     "type": "git",
-    "url": "git@github.com:fritzy/node-azure-media.git"
+    "url": "git@github.com:caagency/caa-azure-media.git"
   },
   "description": "Node SDK for Azure's Media Service",
   "dependencies": {
-    "verymodel": "*"
+    "verymodel": "~1.6.2"
   },
-  "devDependencies": {
-    "nodeunit": "*"
-  },
+  "devDependencies": {},
   "scripts": {
-    "test": "./node_modules/nodeunit/bin/nodeunit tests/tests.js"
+    "test": "mocha"
   },
+  "private": true,
   "main": "index.js"
 }
