@@ -8,7 +8,7 @@
   },
   "description": "Node SDK for Azure's Media Service",
   "dependencies": {
-    "verymodel": "~1.6.2",
+    "verymodel": "^1.6.2",
     "node-uuid": "^1.4.1",
     "request": "^2.34.0",
     "async": "^0.2.10",
