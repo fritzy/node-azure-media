@@ -13,7 +13,7 @@ api.init(function () {
                 api.rest.accesspolicy.delete(policy.Id);
             });
             api.rest.asset.list(function (err, assets) {
-                assets.forEach(function(asset) {
+                assets.forEach(function (asset) {
                     console.log(asset.Id);
                     asset.delete();
                 });

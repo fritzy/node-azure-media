@@ -39,7 +39,7 @@ var calls = {
             if (res.statusCode == 200) {
                 var data = JSON.parse(res.body).d.results;
                 data.forEach(function (rawd) {
-                    var dobj = models['asset'].create(rawd);
+                    var dobj = models.asset.create(rawd);
                     objs.push(dobj);
                 });
                 cb(err, objs);
@@ -49,7 +49,7 @@ var calls = {
         });
     },
 
-    cancel: function cancelJob (id, cb) {
+    cancel: function cancelJob(id, cb) {
         request.get({
             uri: this.config.base_url + 'CanceJob',
             qs: {'jobid': "'" + id + "'"},

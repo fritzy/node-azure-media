@@ -22,12 +22,11 @@ function AzureBlob(api) {
             headers: this.api.defaultHeaders(),
             strictSSL: true
         }, function (err, res) {
-            cb()
+            cb();
         });
     };
 
     this.uploadStream = function (filename, stream, length, uploading_cb, done_cb) {
-        stream.pause();
         async.waterfall([
             //create an asset
             function (cb) {
@@ -58,7 +57,7 @@ function AzureBlob(api) {
             parsedpath.pathname += '/' + filename;
             path = url.format(parsedpath);
             //upload the stream
-            r = request.put({method: 'PUT', url: path, headers: {
+            var r = request.put({method: 'PUT', url: path, headers: {
                 'Content-Type': 'application/octet-stream',
                 'x-ms-blob-type': 'BlockBlob',
                 'Content-Length': length,
@@ -75,13 +74,12 @@ function AzureBlob(api) {
                     function (cb) {
                         this.generateMetadata(result.asset.Id, cb);
                     }.bind(this),
-                ], function(err, metadata) {
+                ], function (err, metadata) {
                     if (typeof done_cb !== 'undefined') {
                         done_cb(err, path, result);
                     }
                 }.bind(this));
             }.bind(this));
-            stream.resume();
             stream.pipe(r);
             if (typeof uploading_cb !== 'undefined') {
                 uploading_cb(err, path, result);
@@ -104,9 +102,9 @@ function AzureBlob(api) {
             function (locator, cb) {
                 this.api.rest.assetfile.list(function (err, results) {
                     if (results.length > 0) {
-                        cb (false, locator, results[0]);
+                        cb(false, locator, results[0]);
                     } else {
-                        cb ("No files associated with asset.");
+                        cb("No files associated with asset.");
                     }
                 }.bind(this), {$filter: "ParentAssetId eq '" + assetId + "' and MimeType eq '" + mimetype + "'", $orderby: 'Created desc', $top: 1});
             }.bind(this),
@@ -141,9 +139,9 @@ function AzureBlob(api) {
             function (locator, cb) {
                 this.api.rest.assetfile.list(function (err, results) {
                     if (results.length > 0) {
-                        cb (false, locator, results[0]);
+                        cb(false, locator, results[0]);
                     } else {
-                        cb ("No files associated with asset.");
+                        cb("No files associated with asset.");
                     }
                 }.bind(this), {$filter: "ParentAssetId eq '" + assetId + "' and MimeType eq '" + mimetype + "'", $orderby: 'Created desc', $top: 1});
             }.bind(this),
