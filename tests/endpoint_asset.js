@@ -3,6 +3,7 @@ var config = require('../testconfig');
 var Azure = require('../index.js');
 
 module.exports = {
+/*
     'Create, List, Get, and Delete': function (test) {
         var az = new Azure(config.auth);
         az.init(function () {
@@ -28,4 +29,5 @@ module.exports = {
             });
         });
     }
+*/
 };
