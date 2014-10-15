@@ -8,18 +8,12 @@
   },
   "description": "Node SDK for Azure's Media Service",
   "dependencies": {
-    "verymodel": "*",
+    "async": "^0.2.10",
+    "moment": "^2.8.3",
     "node-uuid": "^1.4.1",
-    "request": "^2.34.0",
     "nodeunit": "^0.8.6",
-    "async": "^0.2.10"
-  },
-  "devDependencies": {
-    "precommit-hook": "0.3.5",
-    "nodeunit": "*"
-  },
-  "scripts": {
-    "test": "./node_modules/nodeunit/bin/nodeunit tests/tests.js"
+    "request": "^2.34.0",
+    "verymodel": "^1.10.1"
   },
   "main": "index.js"
 }

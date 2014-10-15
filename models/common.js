@@ -2,6 +2,6 @@ var Very = require('verymodel');
 
 module.exports = {
     types: {
-        Name: Very.VeryValidator().not(/[!*'();:@&=+$,/?%#[\]"]/),
+        Name: Very.VeryValidator().notRegex(/[!*'();:@&=+$,/?%#[\]"]/),
     },
 };
