@@ -41,7 +41,7 @@ function AzureBlob(api) {
             //create a location
             function (results, cb) {
                 this.api.rest.locator.create({
-                    StartTime: moment.utc().subtract('minutes', 10).format('M/D/YYYY hh:mm:ss A'),
+                    StartTime: moment.utc().subtract(10, 'minutes').format('M/D/YYYY hh:mm:ss A'),
                     AccessPolicyId: results.policy.Id,
                     AssetId: results.asset.Id,
                     Type: 1,
@@ -87,7 +87,7 @@ function AzureBlob(api) {
         }.bind(this));
     };
 
-    this.downloadStream = function (assetId, mimetype, stream, done_cb) {
+    this.downloadStream = function (assetId, stream, done_cb) {
         async.waterfall([
             function (cb) {
                 this.api.rest.accesspolicy.findOrCreate(60, 1, function (err, result) {
@@ -95,7 +95,7 @@ function AzureBlob(api) {
                 }.bind(this));
             }.bind(this),
             function (policy, cb) {
-                this.api.rest.locator.create({AccessPolicyId: policy.Id, AssetId: assetId, StartTime: moment.utc().subtract('minutes', 5).format('MM/DD/YYYY hh:mm:ss A'), Type: 1}, function (err, locator) {
+                this.api.rest.locator.create({AccessPolicyId: policy.Id, AssetId: assetId, StartTime: moment.utc().subtract(5, 'minutes').format('MM/DD/YYYY hh:mm:ss A'), Type: 1}, function (err, locator) {
                     cb(err, locator);
                 }.bind(this));
             }.bind(this),
@@ -106,7 +106,7 @@ function AzureBlob(api) {
                     } else {
                         cb("No files associated with asset.");
                     }
-                }.bind(this), {$filter: "ParentAssetId eq '" + assetId + "' and MimeType eq '" + mimetype + "'", $orderby: 'Created desc', $top: 1});
+                }.bind(this), {$filter: "ParentAssetId eq '" + assetId +  "'", $orderby: 'Created desc', $top: 1});
             }.bind(this),
         ], function (err, locator, fileasset) {
             var path = locator.Path;
@@ -124,7 +124,7 @@ function AzureBlob(api) {
         }.bind(this));
     };
 
-    this.getDownloadURL = function (assetId, mimetype, done_cb) {
+    this.getDownloadURL = function (assetId, done_cb) {
         async.waterfall([
             function (cb) {
                 this.api.rest.accesspolicy.findOrCreate(60, 1, function (err, result) {
@@ -132,7 +132,7 @@ function AzureBlob(api) {
                 }.bind(this));
             }.bind(this),
             function (policy, cb) {
-                this.api.rest.locator.create({AccessPolicyId: policy.Id, AssetId: assetId, StartTime: moment.utc().subtract('minutes', 5).format('MM/DD/YYYY hh:mm:ss A'), Type: 1}, function (err, locator) {
+                this.api.rest.locator.create({AccessPolicyId: policy.Id, AssetId: assetId, StartTime: moment.utc().subtract(5, 'minutes').format('MM/DD/YYYY hh:mm:ss A'), Type: 1}, function (err, locator) {
                     cb(err, locator);
                 }.bind(this));
             }.bind(this),
@@ -143,7 +143,7 @@ function AzureBlob(api) {
                     } else {
                         cb("No files associated with asset.");
                     }
-                }.bind(this), {$filter: "ParentAssetId eq '" + assetId + "' and MimeType eq '" + mimetype + "'", $orderby: 'Created desc', $top: 1});
+                }.bind(this), {$filter: "ParentAssetId eq '" + assetId + "'", $orderby: 'Created desc', $top: 1});
             }.bind(this),
         ], function (err, locator, fileasset) {
             var path = locator.Path;
@@ -178,7 +178,7 @@ function AzureBlob(api) {
                         Configuration: encoder,
                         MediaProcessorId: processor.Id,
                         TaskBody: "<?xml version=\"1.0\" encoding=\"utf-8\"?><taskBody><inputAsset>JobInputAsset(0)</inputAsset><outputAsset>JobOutputAsset(0)</outputAsset></taskBody>"
-                    }],
+                    }]
                 }, function (err, job) {
                     cb(err, processor, asset, job);
                 });
