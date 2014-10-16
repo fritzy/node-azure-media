@@ -183,7 +183,7 @@ function AzureAPI(config) {
         request.post({
             uri: this.modelURI(model),
             headers: this.defaultHeaders(),
-            body: JSON.stringify(pl.toObject()),
+            body: JSON.stringify(data),
             followRedirect: false,
             strictSSL: true
         }, function (err, res) {

@@ -23,8 +23,8 @@ var calls = {
         }.bind(this));
     },
 
-    list: function (cb) {
-        this.listRequest(modelName, cb);
+    list: function (cb, query) {
+        this.listRequest(modelName, cb, query);
     },
 
     update: function updateAsset(id, data, cb) {
@@ -39,7 +39,7 @@ var calls = {
         cb = cb || function () {};
 
         request.get({
-            uri: this.modelURI('asset', id) + '/AssetFiles',
+            uri: this.modelURI('asset', id) + '/Files',
             headers: this.defaultHeaders(), 
             followRedirect: false, 
             strictSSL: true,
