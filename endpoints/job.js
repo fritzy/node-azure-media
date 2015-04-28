@@ -51,7 +51,7 @@ var calls = {
 
     cancel: function cancelJob(id, cb) {
         request.get({
-            uri: this.config.base_url + 'CanceJob',
+            uri: this.config.base_url + 'CancelJob',
             qs: {'jobid': "'" + id + "'"},
             headers: this.defaultHeaders(),
             followRedirect: false,
