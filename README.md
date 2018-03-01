@@ -11,6 +11,10 @@ This library makes using the API easier.
         // do your work here or after this callback
     });
 
+## Looking for Maintainer(s)
+
+This project is not maintained and likely out of date. If you'd like to take over this project (even just by claiming the npm name for your project) open an issue and let me know.
+
 ## Install
 
 npm install azure-media
@@ -64,7 +68,7 @@ Callback: `function(err, model)`
 
 The `query` parameter is a JavaScript object of the query parameters documented in [OData Query String Options](http://www.odata.org/documentation/odata-v2-documentation/uri-conventions/#4_Query_String_Options) (eg: `{'$filter': "Name eq 'Bill'"}`)
 
-###accesspolicy
+### accesspolicy
 
 AccessPolicys should be reused, rather than just creating a new one for every use.
 So rather than create, or trying to manage this yourself, use
@@ -72,25 +76,25 @@ So rather than create, or trying to manage this yourself, use
 Signature: `findOrCreate(durationInMinutes, permissions, callback)`  
 Callback: `function (err, accesspolicy_model)`
 
-###assetfileindex
-###ingestmanifestasset
-###job
+### assetfileindex
+### ingestmanifestasset
+### job
 
 Signature: `cancel(id, callback)`  
 Callback: `function (err)`
 
-###locator
-###notificationendpoint
-###tasktemplate
-###asset
+### locator
+### notificationendpoint
+### tasktemplate
+### asset
 
 
-###contentkey
-###ingestmanifest
-###ingestmanifestfile
-###jobtemplate
-###mediaprocessor
-###task
+### contentkey
+### ingestmanifest
+### ingestmanifestfile
+### jobtemplate
+### mediaprocessor
+### task
 
 ## Models
 
@@ -99,24 +103,24 @@ These are based on Microsoft's documentation and are implemented in /models/
 
 Some models have extra ORM-like methods, allowing you to interact with the model itself which will work with the Azure REST API behind the scenes.
 
-###accesspolicy
-###assetfileindex
-###ingestmanifestasset
-###job
-###locator
-###notificationendpoint
-###tasktemplate
-###asset
-###contentkey
-###ingestmanifest
-###ingestmanifestfile
-###jobtemplate
-###mediaprocessor
-###task
+### accesspolicy
+### assetfileindex
+### ingestmanifestasset
+### job
+### locator
+### notificationendpoint
+### tasktemplate
+### asset
+### contentkey
+### ingestmanifest
+### ingestmanifestfile
+### jobtemplate
+### mediaprocessor
+### task
 
 ## Workflow Methods
 
-###uploadStream
+### uploadStream
 
     api.uploadStream('somefile.mp4', fs.createReadStream('/some/file.mp4'), fs.statSync('/some/file.mp4').size, function (err, path, result) {
     }, function (err, path) {
